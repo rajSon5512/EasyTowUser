@@ -4,33 +4,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.somzzzzz.easytowuser.R;
 
-import static android.support.constraint.Constraints.TAG;
-
-public class HistoryFragment extends Fragment {
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+public class PaymentDone extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view=inflater.inflate(R.layout.fragmenthistory,container,false);
-
-        Log.d(TAG, "HistotyFragment ");
+        View view=inflater.inflate(R.layout.fragmentpayment,container,false);
 
         return view;
     }
-
 }
