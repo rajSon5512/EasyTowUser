@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">EasyTowUser</string>
+    <string name="login_hint">Mobile Number</string>
+    <string name="login">Login</string>
+    <string name="otp">OTP Number</string>
+    <string name="next">NEXT</string>
+    <string name="resend">RESEND</string>
 </resources>
