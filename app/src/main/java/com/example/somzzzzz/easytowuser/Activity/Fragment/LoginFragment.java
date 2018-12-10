@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.somzzzzz.easytowuser.Activity.Activity.MainActivity;
+import com.example.somzzzzz.easytowuser.Activity.Activity.OtpActivity;
 import com.example.somzzzzz.easytowuser.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,29 +37,25 @@ public class LoginFragment extends Fragment{
 
     private static final String TAG = "PhoneAuthActivity";
 
-    private static final String KEY_VERIFY_IN_PROGRESS = "key_verify_in_progress";
-
-    private static final int STATE_INITIALIZED = 1;
-    private static final int STATE_CODE_SENT = 2;
-    private static final int STATE_VERIFY_FAILED = 3;
-    private static final int STATE_VERIFY_SUCCESS = 4;
-    private static final int STATE_SIGNIN_FAILED = 5;
-    private static final int STATE_SIGNIN_SUCCESS = 6;
-
 
     private boolean mVerificationProgress=false;
     private String mVerificationId;
 
-    private EditText mEditText;
+    private EditText mMobileNumber;
     private Button mLoginButton;
     private FirebaseAuth mAuth;
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallBacks;
 
+    private Callback mCallbackInterface;
+    
+    public interface Callback{
+        void onOtpVerfication(String verficationId,String mobilenumber);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
         final FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
 
@@ -76,22 +74,13 @@ public class LoginFragment extends Fragment{
 
                 mVerificationProgress=false;
 
-                signInWithPhoneAuthCredential(phoneAuthCredential);
-
-
+                 signInWithPhoneAuthCredential(phoneAuthCredential);
             }
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
 
                 Log.d(TAG, "onVerificationFailed: "+e);
-
-                if(e instanceof FirebaseAuthInvalidCredentialsException){
-
-                }else if(e instanceof FirebaseTooManyRequestsException){
-
-                }
-
 
             }
 
@@ -101,6 +90,11 @@ public class LoginFragment extends Fragment{
 
                 mVerificationId=verificationId;
 
+                String mobileNumbern=mMobileNumber.getEditableText().toString();
+
+                Intent intent=OtpActivity.getStartIntent(mVerificationId,getContext(),mobileNumbern);
+                startActivity(intent);
+                getActivity().finish();
             }
 
         };
@@ -116,17 +110,14 @@ public class LoginFragment extends Fragment{
             @Override
             public void onSuccess(AuthResult authResult) {
 
-                Log.d(TAG, "onSuccess: done ");
-                
+                Log.d(TAG, "onSuccess:success ");
 
-                
             }
         }).addOnFailureListener(getActivity(), new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
 
                 Log.d(TAG, "onFailure: Fail :"+e.getMessage());
-                
             }
         });
     }
@@ -143,7 +134,7 @@ public class LoginFragment extends Fragment{
             @Override
             public void onClick(View v) {
 
-                String mobilenumber=mEditText.getText().toString();
+                String mobilenumber=mMobileNumber.getText().toString();
 
                 if(mobilenumber.length()!=10){
 
@@ -165,7 +156,7 @@ public class LoginFragment extends Fragment{
 
     private void init(View view) {
 
-        mEditText=view.findViewById(R.id.mobile_number);
+        mMobileNumber=view.findViewById(R.id.mobile_number);
         mLoginButton=view.findViewById(R.id.login_button);
         mAuth= FirebaseAuth.getInstance();
     }

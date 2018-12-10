@@ -4,5 +4,12 @@
     android:layout_height="match_parent"
     android:background="@color/colorAccent">
 
+    <TextView
+        android:id="@+id/mnumber"
+        android:layout_gravity="bottom"
+        android:text="RajSonawala"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 
 </LinearLayout>

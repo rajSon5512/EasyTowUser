@@ -29,9 +29,7 @@ public class PendingFragment extends Fragment {
 
         Log.d(TAG, "PendingFragment");
 
-
         return view;
     }
-
 
 }

@@ -5,4 +5,6 @@
     <string name="otp">OTP Number</string>
     <string name="next">NEXT</string>
     <string name="resend">RESEND</string>
+    <string name="otpEmpty">PLEASE ENTER OTP</string>
+    <string name="otpWrong">INVALID OTP</string>
 </resources>
