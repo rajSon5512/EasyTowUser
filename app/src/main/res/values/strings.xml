@@ -7,4 +7,10 @@
     <string name="resend">RESEND</string>
     <string name="otpEmpty">PLEASE ENTER OTP</string>
     <string name="otpWrong">INVALID OTP</string>
+    <string name="pay_bill">PAY</string>
+    <string name="pay">PAY</string>
+    <string name="locate">LOCATE</string>
+    <string name="time">PICK_TIME</string>
+    <string name="date">Pick_Date</string>
+    <string name="vehicle_number">Vehicle_number</string>
 </resources>

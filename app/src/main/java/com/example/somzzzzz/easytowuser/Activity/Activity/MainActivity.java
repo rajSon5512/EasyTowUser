@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.somzzzzz.easytowuser.Activity.Fragment.HistoryFragment;
 import com.example.somzzzzz.easytowuser.Activity.Fragment.MapFragment;
@@ -79,6 +80,11 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
        }
+       else if(item.getItemId()==R.id.profile){
+
+            Toast.makeText(this,"profile",Toast.LENGTH_SHORT).show();
+
+        }
 
         return super.onOptionsItemSelected(item);
     }
