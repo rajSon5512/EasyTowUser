@@ -13,4 +13,5 @@
     <string name="time">PICK_TIME</string>
     <string name="date">Pick_Date</string>
     <string name="vehicle_number">Vehicle_number</string>
+    <string name="fine">FINE</string>
 </resources>

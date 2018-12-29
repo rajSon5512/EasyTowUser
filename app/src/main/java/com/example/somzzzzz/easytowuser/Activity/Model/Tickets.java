@@ -23,9 +23,9 @@ public class Tickets {
 
     public Tickets(DocumentSnapshot documentSnapshot){
 
-//        mFine=documentSnapshot.getString(Tickets.FINE);
+        mFine=documentSnapshot.get(Tickets.FINE).toString();
         mCurrentStatus=documentSnapshot.getString(Tickets.CURRENT_STATUS);
-//        mDate=documentSnapshot.getString(Tickets.DATE);
+        mDate=documentSnapshot.get(Tickets.DATE).toString();
         mRaisedBy=documentSnapshot.getString(Tickets.RAISED_BY);
         mVehicleId=documentSnapshot.getString(Tickets.VEHICLE_ID);
 

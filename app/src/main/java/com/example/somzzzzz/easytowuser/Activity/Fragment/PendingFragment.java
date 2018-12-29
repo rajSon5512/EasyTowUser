@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -119,7 +120,7 @@ public class PendingFragment extends Fragment {
 
     public class PendingViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView index,vehiclenumber,pickupdate,time;
+        private TextView index,vehiclenumber,pickupdate,time,fine;
 
         public PendingViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -127,13 +128,16 @@ public class PendingFragment extends Fragment {
             vehiclenumber=itemView.findViewById(R.id.vehicle_number);
             pickupdate=itemView.findViewById(R.id.date);
             time=itemView.findViewById(R.id.time);
+            fine=itemView.findViewById(R.id.fine);
         }
 
         public void bind(Tickets tickets){
 
             index.setText(String.valueOf(getAdapterPosition()+1));
             vehiclenumber.setText(tickets.getVehicleId());
-
+            fine.setText("Fine: "+tickets.getFine());
+            String date1=tickets.getDate();
+            pickupdate.setText(date1);
         }
 
     }
