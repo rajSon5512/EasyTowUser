@@ -12,9 +12,10 @@ public class Tickets {
     public static final String RAISED_BY="raised_by";
     public static final String VEHICLE_ID="vehicle_id";
 
+    public static final String DEFAULT_TICKET_STATUS="pending";
 
 
-    private int mFine;
+    private String mFine;
     private String mCurrentStatus;
     private String mDate;
     private String mRaisedBy;
@@ -22,20 +23,20 @@ public class Tickets {
 
     public Tickets(DocumentSnapshot documentSnapshot){
 
-        mFine= (int) documentSnapshot.get(Tickets.FINE);
+//        mFine=documentSnapshot.getString(Tickets.FINE);
         mCurrentStatus=documentSnapshot.getString(Tickets.CURRENT_STATUS);
-        mDate=documentSnapshot.getString(Tickets.DATE);
+//        mDate=documentSnapshot.getString(Tickets.DATE);
         mRaisedBy=documentSnapshot.getString(Tickets.RAISED_BY);
         mVehicleId=documentSnapshot.getString(Tickets.VEHICLE_ID);
 
     }
 
 
-    public int getFine() {
+    public String getFine() {
         return mFine;
     }
 
-    public void setFine(int fine) {
+    public void setFine(String fine) {
         mFine = fine;
     }
 
