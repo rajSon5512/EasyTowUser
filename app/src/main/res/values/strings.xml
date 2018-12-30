@@ -14,4 +14,7 @@
     <string name="date">Pick_Date</string>
     <string name="vehicle_number">Vehicle_number</string>
     <string name="fine">FINE</string>
+    <string name="profile_name">PROFILE</string>
+    <string name="mobile_number">MOBILE_NUMBER</string>
+    <string name="save">SAVE</string>
 </resources>

@@ -21,7 +21,7 @@
         </activity>
         <activity android:name=".Activity.Activity.MainActivity"></activity>
         <activity android:name=".Activity.Activity.OtpActivity"></activity>
-
+        <activity android:name=".Activity.Activity.ProfileActivity"></activity>
     </application>
 
 </manifest>

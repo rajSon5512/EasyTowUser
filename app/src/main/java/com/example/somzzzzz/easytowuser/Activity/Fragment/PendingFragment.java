@@ -167,6 +167,4 @@ public class PendingFragment extends Fragment {
             return mPendingEntries.size();
         }
     }
-
-
 }

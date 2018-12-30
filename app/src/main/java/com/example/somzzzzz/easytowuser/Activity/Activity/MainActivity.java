@@ -21,6 +21,7 @@ import com.example.somzzzzz.easytowuser.Activity.Fragment.HistoryFragment;
 import com.example.somzzzzz.easytowuser.Activity.Fragment.MapFragment;
 import com.example.somzzzzz.easytowuser.Activity.Fragment.PaymentDone;
 import com.example.somzzzzz.easytowuser.Activity.Fragment.PendingFragment;
+import com.example.somzzzzz.easytowuser.Activity.Fragment.ProfileFragment;
 import com.example.somzzzzz.easytowuser.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -83,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
        else if(item.getItemId()==R.id.profile){
 
             Toast.makeText(this,"profile",Toast.LENGTH_SHORT).show();
+
+            Intent intent=new Intent(this,ProfileActivity.class);
+            startActivity(intent);
 
         }
 
