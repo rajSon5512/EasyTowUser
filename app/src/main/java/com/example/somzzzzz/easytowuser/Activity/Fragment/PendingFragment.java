@@ -85,7 +85,8 @@ public class PendingFragment extends Fragment {
 
     private void fetchPendingEntries() {
 
-        mCollectionReference.whereEqualTo(Tickets.CURRENT_STATUS,Tickets.DEFAULT_TICKET_STATUS)
+        mCollectionReference.whereEqualTo(Tickets.VEHICLE_ID,"GJ5-ER-1550")
+                .whereEqualTo(Tickets.CURRENT_STATUS,Tickets.DEFAULT_TICKET_STATUS)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
