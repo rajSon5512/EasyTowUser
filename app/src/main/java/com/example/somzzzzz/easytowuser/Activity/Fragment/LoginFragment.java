@@ -59,7 +59,6 @@ public class LoginFragment extends Fragment{
 
         final FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
 
-
         if(user!=null){
 
             Intent intent=new Intent(getContext(),MainActivity.class);

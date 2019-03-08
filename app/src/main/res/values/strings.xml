@@ -17,4 +17,5 @@
     <string name="profile_name">PROFILE</string>
     <string name="mobile_number">MOBILE_NUMBER</string>
     <string name="save">SAVE</string>
+    <string name="NOITEMFOUND">NO VEHICLE TOWED</string>
 </resources>

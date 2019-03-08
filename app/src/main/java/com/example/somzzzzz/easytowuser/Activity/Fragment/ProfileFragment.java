@@ -29,6 +29,7 @@ public class ProfileFragment extends Fragment {
     private CollectionReference mCollectionReference;
     private FirebaseUser mUser;
     private EditText mProfileName;
+    private EditText mMobileNumber;
 
 
     @Override
@@ -63,6 +64,11 @@ public class ProfileFragment extends Fragment {
                         NormalUser normalUser=new NormalUser(documentSnapshot);
 
                         mProfileName.setText(normalUser.getOwnerName());
+                        mMobileNumber.setText(normalUser.getOwnerMobileNumber());
+
+                        mProfileName.setEnabled(false);
+                        mMobileNumber.setEnabled(false);
+
 
                     }
                 })
@@ -81,6 +87,7 @@ public class ProfileFragment extends Fragment {
     private void init(View view) {
 
         mProfileName=view.findViewById(R.id.profile_name);
+        mMobileNumber=view.findViewById(R.id.mobile_number);
 
     }
 
