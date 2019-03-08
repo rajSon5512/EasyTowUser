@@ -180,7 +180,6 @@ public class PendingFragment extends Fragment {
 
                     checkSumGeneration();
 
-
                     break;
 
             }
