@@ -1,0 +1,115 @@
+{
+  "project_info": {
+    "project_number": "543618750633",
+    "firebase_url": "https://easytowofficer.firebaseio.com",
+    "project_id": "easytowofficer",
+    "storage_bucket": "easytowofficer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543618750633:android:fc835066d7b94867",
+        "android_client_info": {
+          "package_name": "com.example.somzzzzz.easytowuser"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "543618750633-i8qrn4946a753530f4q2dk6eme97jk87.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.somzzzzz.easytowuser",
+            "certificate_hash": "452fdad2d7d950460b92d4270bf9f06c5e40de46"
+          }
+        },
+        {
+          "client_id": "543618750633-np6tfktvj8f9v3oee64nmkdrl7susf9n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo63PNKkJt_DpZrVug2l32A81VzZEysRY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "543618750633-np6tfktvj8f9v3oee64nmkdrl7susf9n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:543618750633:android:3860fc89cbefd096",
+        "android_client_info": {
+          "package_name": "com.knoxpo.rajivsonawala.easytow_officer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "543618750633-efk3gnbaa7dg973k5nv37jvb0a5v5ldu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.knoxpo.rajivsonawala.easytow_officer",
+            "certificate_hash": "300db660868ebfd202d94e6b4f4e3627ec527cbe"
+          }
+        },
+        {
+          "client_id": "543618750633-7kra7c4ri7uiem4gdgu9tkj002hpohc3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.knoxpo.rajivsonawala.easytow_officer",
+            "certificate_hash": "1f41be11d294c4bc0858831ae32febaaad47817b"
+          }
+        },
+        {
+          "client_id": "543618750633-mq8g6k7nveekbdd182cc7ujqof5l4ein.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.knoxpo.rajivsonawala.easytow_officer",
+            "certificate_hash": "452fdad2d7d950460b92d4270bf9f06c5e40de46"
+          }
+        },
+        {
+          "client_id": "543618750633-np6tfktvj8f9v3oee64nmkdrl7susf9n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo63PNKkJt_DpZrVug2l32A81VzZEysRY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "543618750633-np6tfktvj8f9v3oee64nmkdrl7susf9n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
