@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.somzzzzz.easytowuser.Activity.Activity.MainActivity;
+import com.example.somzzzzz.easytowuser.Activity.Model.CheckSum;
 import com.example.somzzzzz.easytowuser.Activity.Model.Tickets;
 import com.example.somzzzzz.easytowuser.R;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,6 +48,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.zip.Checksum;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import static android.support.constraint.Constraints.TAG;
 import static android.view.View.inflate;
 
@@ -59,6 +66,7 @@ public class PendingFragment extends Fragment {
     private CollectionReference mCollectionReference;
     private FirebaseUser mFirebaseUser;
     private List<Tickets> mPendingEntries=new ArrayList<>();
+    private CheckSum mCheckSum;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -190,33 +198,27 @@ public class PendingFragment extends Fragment {
 
     private void checkSumGeneration() {
 
-        String merchantMid = "dbMIND07876515785068";
-// Key in your staging and production MID available in your dashboard
-        String merchantKey = "Mg%&2NKkZ%uE#_Sb";
-// Key in your staging and production MID available in your dashboard
-        String orderId = "order1";
-        String channelId = "WAP";
-        String custId = "cust123";
-        String mobileNo = "7777777777";
-        String email = "username@emailprovider.com";
-        String txnAmount = "100.12";
-        String website = "WEBSTAGING";
-// This is the staging value. Production value is available in your dashboard
-        String industryTypeId = "Retail";
-// This is the staging value. Production value is available in your dashboard
-        String callbackUrl = "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=order1";
-        TreeMap<String, String> paytmParams = new TreeMap<String, String>();
-        paytmParams.put("MID",merchantMid);
-        paytmParams.put("ORDER_ID",orderId);
-        paytmParams.put("CHANNEL_ID",channelId);
-        paytmParams.put("CUST_ID",custId);
-        paytmParams.put("MOBILE_NO",mobileNo);
-        paytmParams.put("EMAIL",email);
-        paytmParams.put("TXN_AMOUNT",txnAmount);
-        paytmParams.put("WEBSITE",website);
-        paytmParams.put("INDUSTRY_TYPE_ID",industryTypeId);
-        paytmParams.put("CALLBACK_URL", callbackUrl);
+        final Retrofit retrofit=new Retrofit.Builder()
+                .baseUrl(Api.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        Api api=retrofit.create(Api.class);
+
+        api.getCheckSum().enqueue(new Callback<CheckSum>() {
+            @Override
+            public void onResponse(Call<CheckSum> call, Response<CheckSum> response) {
+
+                    mCheckSum=response.body();
+                Log.d("CheckSum", "onResponse: "+mCheckSum.getCHECKSUMHASH());
+            }
+
+            @Override
+            public void onFailure(Call<CheckSum> call, Throwable t) {
+
+                Log.d(TAG, "onFailure: "+t.getMessage());
+            }
+        });
 
     }
 
