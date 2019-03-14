@@ -3,7 +3,6 @@
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -11,17 +10,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.somzzzzz.easytowuser.Activity.Activity.MainActivity;
 import com.example.somzzzzz.easytowuser.Activity.Model.CheckSum;
 import com.example.somzzzzz.easytowuser.Activity.Model.Tickets;
 import com.example.somzzzzz.easytowuser.R;
@@ -32,21 +28,14 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.paytm.pgsdk.PaytmOrder;
-import com.paytm.pgsdk.PaytmPGActivity;
 import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.zip.Checksum;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,10 +44,10 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.support.constraint.Constraints.TAG;
-import static android.view.View.inflate;
+import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
 
-public class PendingFragment extends Fragment {
+ public class PendingFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -122,6 +111,7 @@ public class PendingFragment extends Fragment {
                         List<DocumentSnapshot> documentSnapshots=new ArrayList<DocumentSnapshot>();
 
                         documentSnapshots=queryDocumentSnapshots.getDocuments();
+                        documentSnapshots=queryDocumentSnapshots.getDocuments();
 
                         for (DocumentSnapshot document:documentSnapshots) {
 
@@ -178,15 +168,10 @@ public class PendingFragment extends Fragment {
             switch(v.getId()){
 
                 case R.id.pay_button:
+
                     Toast.makeText(getContext(),"Pay",Toast.LENGTH_SHORT).show();
 
-                    PaytmPGService service=PaytmPGService.getStagingService();
-
-                    PaytmOrder order=paytmOrder();
-
-                    serviceInitialization(service,order);
-
-                    checkSumGeneration();
+                    createCheckSumGeneration();
 
                     break;
 
@@ -196,9 +181,12 @@ public class PendingFragment extends Fragment {
 
     }
 
-    private void checkSumGeneration() {
+    private void createCheckSumGeneration() {
 
-        final Retrofit retrofit=new Retrofit.Builder()
+
+        Log.d(CHECKSUM, "createCheckSumGeneration: called ");
+
+        Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(Api.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -209,14 +197,45 @@ public class PendingFragment extends Fragment {
             @Override
             public void onResponse(Call<CheckSum> call, Response<CheckSum> response) {
 
-                    mCheckSum=response.body();
-                Log.d("CheckSum", "onResponse: "+mCheckSum.getCHECKSUMHASH());
+                     mCheckSum=response.body();
+                    Log.d(CHECKSUM, "onResponse: "+mCheckSum.getCHECKSUMHASH());
             }
 
             @Override
             public void onFailure(Call<CheckSum> call, Throwable t) {
 
-                Log.d(TAG, "onFailure: "+t.getMessage());
+                Log.d(CHECKSUM, "onFailure: "+t.getMessage());
+            }
+        });
+
+        api.getResponse(mCheckSum).enqueue(new Callback<com.example.somzzzzz.easytowuser.Activity.Model.Response>() {
+            @Override
+            public void onResponse(Call<com.example.somzzzzz.easytowuser.Activity.Model.Response> call, Response<com.example.somzzzzz.easytowuser.Activity.Model.Response> response) {
+
+                if(call.isExecuted()){
+
+                    int rescode=response.code();
+
+                    if(rescode==200){
+
+                        Log.d(CHECKSUM, "SUCCESS");
+
+                        PaytmPGService service=PaytmPGService.getStagingService();
+
+                        PaytmOrder order=paytmOrder(mCheckSum);
+
+                        serviceInitialization(service,order);
+
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<com.example.somzzzzz.easytowuser.Activity.Model.Response> call, Throwable t) {
+
+                Log.d(CHECKSUM, "onFailure: "+t.getMessage());
+
             }
         });
 
@@ -278,25 +297,27 @@ public class PendingFragment extends Fragment {
 
     }
 
-    private PaytmOrder paytmOrder() {
+    private PaytmOrder paytmOrder(CheckSum checkSum) {
 
         HashMap<String,String> paramMap=new HashMap<String,String>();
-        paramMap.put( "MID" , "dbMIND07876515785068");
-// Key in your staging and production MID available in your dashboard
-        paramMap.put( "ORDER_ID" , "order1");
-        paramMap.put( "CUST_ID" , "cust123");
-        paramMap.put( "MOBILE_NO" , "7777777777");
-        paramMap.put( "EMAIL" , "username@emailprovider.com");
-        paramMap.put( "CHANNEL_ID" , "WAP");
-        paramMap.put( "TXN_AMOUNT" , "100.12");
-        paramMap.put( "WEBSITE" , "WEBSTAGING");
-// This is the staging value. Production value is available in your dashboard
-        paramMap.put( "INDUSTRY_TYPE_ID" , "Retail");
-// This is the staging value. Production value is available in your dashboard
-        paramMap.put( "CALLBACK_URL", "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=order1");
-        paramMap.put( "CHECKSUMHASH" , "w2QDRMgp1234567JEAPCIOmNgQvsi+BhpqijfM9KvFfRiPmGSt3Ddzw+oTaGCLneJwxFFq5mqTMwJXdQE2EzK4px2xruDqKZjHupz9yXev4=");
-        PaytmOrder paytmOrder=new PaytmOrder(paramMap);
+        paramMap.put( "MID" , checkSum.getMID());
 
+        Log.d(CHECKSUM, "paytmOrder: "+checkSum.getMID());
+
+        // Key in your staging and production MID available in your dashboard
+        paramMap.put( "ORDER_ID" , checkSum.getORDER_ID());
+        paramMap.put( "CUST_ID" , checkSum.getCUST_ID());
+        paramMap.put( "MOBILE_NO" ,checkSum.getMOBILE_NO());
+        paramMap.put( "EMAIL" , checkSum.getEMAIL());
+        paramMap.put( "CHANNEL_ID" , checkSum.getCHANNEL_ID());
+        paramMap.put( "TXN_AMOUNT" , checkSum.getTXN_AMOUNT());
+        paramMap.put( "WEBSITE" , checkSum.getWEBSITE());
+        // This is the staging value. Production value is available in your dashboard
+        paramMap.put( "INDUSTRY_TYPE_ID" , checkSum.getINDUSTRY_TYPE_ID());
+        // This is the staging value. Production value is available in your dashboard
+        paramMap.put( "CALLBACK_URL", checkSum.getCALLBACK_URL());
+        paramMap.put( "CHECKSUMHASH" , checkSum.getCHECKSUMHASH());
+        PaytmOrder paytmOrder=new PaytmOrder(paramMap);
         return paytmOrder;
     }
 

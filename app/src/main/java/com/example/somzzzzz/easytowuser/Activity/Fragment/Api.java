@@ -1,9 +1,12 @@
 package com.example.somzzzzz.easytowuser.Activity.Fragment;
 
 import com.example.somzzzzz.easytowuser.Activity.Model.CheckSum;
+import com.example.somzzzzz.easytowuser.Activity.Model.Response;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 
 public interface Api {
 
@@ -18,7 +21,8 @@ public interface Api {
     @GET("create-checksum")
     Call<CheckSum> getCheckSum();
 
-    /*@POST("verify-checksum")
-    Call<Response> getResponse();
-*/
+    @POST("verify-checksum")
+    Call<Response> getResponse(@Body CheckSum checkSum);
+
+
 }
