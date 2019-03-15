@@ -292,9 +292,6 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
                     }
                 });
 
-
-
-
     }
 
     private PaytmOrder paytmOrder(CheckSum checkSum) {
