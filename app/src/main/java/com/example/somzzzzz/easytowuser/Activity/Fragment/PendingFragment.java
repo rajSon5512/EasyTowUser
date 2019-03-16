@@ -20,9 +20,12 @@ import android.widget.Toast;
 
 import com.example.somzzzzz.easytowuser.Activity.Model.CheckSum;
 import com.example.somzzzzz.easytowuser.Activity.Model.Tickets;
+import com.example.somzzzzz.easytowuser.Activity.Model.Transactions;
 import com.example.somzzzzz.easytowuser.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -56,8 +59,9 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
     private FirebaseUser mFirebaseUser;
     private List<Tickets> mPendingEntries=new ArrayList<>();
     private CheckSum mCheckSum;
+     private static final String USERID="USERID";
 
-    @Override
+     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -136,7 +140,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
     }
 
 
-    public class PendingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class PendingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView index,vehiclenumber,pickupdate,time,fine;
         private Button paybutton;
@@ -152,7 +156,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
             paybutton.setOnClickListener(this);
         }
 
-        public void bind(Tickets tickets){
+        public void bind(final Tickets tickets){
 
             index.setText(String.valueOf(getAdapterPosition()+1));
             vehiclenumber.setText(tickets.getVehicleId());
@@ -160,6 +164,12 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
             String date1=tickets.getDate();
             pickupdate.setText(date1);
 
+            /*paybutton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    checkFunction(tickets.getVehicleId());
+                }
+            });*/
         }
 
         @Override
@@ -171,8 +181,34 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                     Toast.makeText(getContext(),"Pay",Toast.LENGTH_SHORT).show();
 
-                    createCheckSumGeneration();
+                    int position=getAdapterPosition();
 
+                    Log.d(TAG, "onClick: "+position);
+
+                    Tickets tickets=mPendingEntries.get(position);
+
+                    FirebaseFirestore.getInstance().collection("transactions")
+                            .whereEqualTo("vehiclenumber", tickets.getVehicleId())
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                                    if(task.isSuccessful()){
+
+                                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
+
+                                        for(int i=0;i<documents.size();i++){
+                                            String documentId = documents.get(i).getId();
+                                            String fine=documents.get(i).getString("taxamount");
+                                            String date=documents.get(i).getString("date");
+                                            createCheckSumGeneration(documentId,fine,date);
+                                        }
+
+                                    }
+
+                                }
+                            });
                     break;
 
             }
@@ -181,10 +217,29 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     }
 
-    private void createCheckSumGeneration() {
+    /* private void checkFunction(String vehicleId) {
+
+         Toast.makeText(getContext(),""+vehicleId,Toast.LENGTH_SHORT).show();
+
+         String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+         Log.d(TAG, "checkFunction: "+uid);
 
 
-        Log.d(CHECKSUM, "createCheckSumGeneration: called ");
+
+         createCheckSumGeneration();
+
+     }
+*/
+     private void createCheckSumGeneration(String orderid,String date,String fine) {
+
+        Log.d(CHECKSUM, "createCheckSumGeneration: "+orderid+"date :"+date+"fine :"+fine);
+
+        Transactions transactions=new Transactions();
+
+        transactions.setORDERID(orderid);
+       /* transactions.setDate(date);
+       */ transactions.setFINE(fine);
 
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(Api.BASE_URL)
@@ -193,7 +248,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
         Api api=retrofit.create(Api.class);
 
-        api.getCheckSum().enqueue(new Callback<CheckSum>() {
+        api.getCheckSum(transactions).enqueue(new Callback<CheckSum>() {
             @Override
             public void onResponse(Call<CheckSum> call, Response<CheckSum> response) {
 

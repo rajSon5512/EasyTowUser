@@ -2,6 +2,10 @@ package com.example.somzzzzz.easytowuser.Activity.Fragment;
 
 import com.example.somzzzzz.easytowuser.Activity.Model.CheckSum;
 import com.example.somzzzzz.easytowuser.Activity.Model.Response;
+import com.example.somzzzzz.easytowuser.Activity.Model.Transactions;
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
+
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -18,8 +22,8 @@ public interface Api {
 
     String BASE_URL="https://us-central1-easytowofficer.cloudfunctions.net/api/";
 
-    @GET("create-checksum")
-    Call<CheckSum> getCheckSum();
+    @POST("create-checksum")
+    Call<CheckSum> getCheckSum(@Body Transactions transactions);
 
     @POST("verify-checksum")
     Call<Response> getResponse(@Body CheckSum checkSum);
