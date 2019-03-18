@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         Adapter adapter=new Adapter(getSupportFragmentManager());
 
         adapter.addFragment(new PendingFragment(),"Pending");
-        adapter.addFragment(new PaymentDone(),"Notifications");
+       // adapter.addFragment(new PaymentDone(),"Notifications");
         adapter.addFragment(new HistoryFragment(),"History");
         adapter.addFragment(new MapFragment(),"Map");
         viewPager.setAdapter(adapter);

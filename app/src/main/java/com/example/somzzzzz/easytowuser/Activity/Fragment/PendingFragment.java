@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.somzzzzz.easytowuser.Activity.Model.CheckSum;
+import com.example.somzzzzz.easytowuser.Activity.Model.NormalUser;
 import com.example.somzzzzz.easytowuser.Activity.Model.Tickets;
 import com.example.somzzzzz.easytowuser.Activity.Model.Transactions;
 import com.example.somzzzzz.easytowuser.R;
@@ -105,42 +106,83 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     private void fetchPendingEntries() {
 
-        mCollectionReference.whereEqualTo(Tickets.VEHICLE_ID,"GJ5-ER-1550")
-                .whereEqualTo(Tickets.CURRENT_STATUS,Tickets.DEFAULT_TICKET_STATUS)
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        String userId=FirebaseAuth.getInstance().getUid();
+
+        Log.d(TAG, "Uid: "+userId);
+
+        final String[] vehicleI = new String[1];
+
+        FirebaseFirestore.getInstance().collection(NormalUser.COLLECTION_NAME)
+                .document(userId).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                        List<DocumentSnapshot> documentSnapshots=new ArrayList<DocumentSnapshot>();
+                        if(task.isSuccessful()){
 
-                        documentSnapshots=queryDocumentSnapshots.getDocuments();
-                        documentSnapshots=queryDocumentSnapshots.getDocuments();
+                            DocumentSnapshot vehiclenumber=task.getResult();
 
-                        for (DocumentSnapshot document:documentSnapshots) {
+                            Log.d(TAG, "onComplete: "+vehiclenumber.getString(NormalUser.VEHICLE_NUMBER));
 
-                            Tickets tickets=new Tickets(document);
+                            vehicleI[0] =vehiclenumber.getString(NormalUser.VEHICLE_NUMBER);
 
-                            mPendingEntries.add(tickets);
-                            mAdapter.notifyItemInserted(mPendingEntries.indexOf(tickets));
+                            addVehicleEntries(vehicleI[0]);
+
+
+                        }else{
+                            Log.d(TAG, "onComplete: "+task.getException());
 
                         }
 
-                        Log.d(TAG, "onSuccess: "+mPendingEntries.size());
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
-                Log.d(TAG, "onFailure: "+e.getMessage());
-            }
-        });
+                });
 
 
     }
 
+     private void addVehicleEntries(String s) {
 
-    public class PendingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+         Log.d(TAG, "addVehicleEntries: "+s);
+
+         mCollectionReference.whereEqualTo(Tickets.VEHICLE_ID,s)
+                 .whereEqualTo(Tickets.CURRENT_STATUS,Tickets.DEFAULT_TICKET_STATUS)
+                 .get()
+                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                     @Override
+                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                         List<DocumentSnapshot> documentSnapshots=new ArrayList<DocumentSnapshot>();
+
+                         // documentSnapshots=queryDocumentSnapshots.getDocuments();
+                         documentSnapshots=queryDocumentSnapshots.getDocuments();
+
+                         Log.d("SIZE", "onSuccess: "+documentSnapshots.size());
+
+                         for (DocumentSnapshot document:documentSnapshots) {
+
+                             Tickets tickets=new Tickets(document);
+
+                             mPendingEntries.add(tickets);
+                             mAdapter.notifyItemInserted(mPendingEntries.indexOf(tickets));
+
+                         }
+
+                         Log.d(TAG, "onSuccess: "+mPendingEntries.size());
+                     }
+                 }).addOnFailureListener(new OnFailureListener() {
+             @Override
+             public void onFailure(@NonNull Exception e) {
+
+                 Log.d(TAG, "onFailure: "+e.getMessage());
+             }
+         });
+
+
+
+     }
+
+
+     public class PendingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView index,vehiclenumber,pickupdate,time,fine;
         private Button paybutton;
@@ -202,7 +244,8 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
                                             String documentId = documents.get(i).getId();
                                             String fine=documents.get(i).getString("taxamount");
                                             String date=documents.get(i).getString("date");
-                                            createCheckSumGeneration(documentId,fine,date);
+                                            String status=documents.get(i).getString("status");
+                                            createCheckSumGeneration(documentId,fine,date,status);
                                         }
 
                                     }
@@ -231,15 +274,16 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
      }
 */
-     private void createCheckSumGeneration(String orderid,String date,String fine) {
+     private void createCheckSumGeneration(String orderid,String date,String fine,String status) {
 
-        Log.d(CHECKSUM, "createCheckSumGeneration: "+orderid+"date :"+date+"fine :"+fine);
+        Log.d(CHECKSUM, "createCheckSumGeneration: "+orderid+"date :"+date+"fine :"+fine+"Status: "+status);
 
         Transactions transactions=new Transactions();
 
         transactions.setORDERID(orderid);
        /* transactions.setDate(date);
        */ transactions.setFINE(fine);
+       transactions.setStatus(status);
 
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(Api.BASE_URL)
@@ -306,6 +350,9 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
                     public void onTransactionResponse(Bundle inResponse) {
 
                         Toast.makeText(getContext(),"Transaction Response:"+inResponse.toString(),Toast.LENGTH_SHORT).show();
+
+
+
                     }
 
                     @Override
