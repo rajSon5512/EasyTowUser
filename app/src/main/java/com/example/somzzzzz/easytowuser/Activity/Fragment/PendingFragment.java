@@ -278,7 +278,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
         Log.d(CHECKSUM, "createCheckSumGeneration: "+orderid+"date :"+date+"fine :"+fine+"Status: "+status);
 
-        Transactions transactions=new Transactions();
+        final Transactions transactions=new Transactions();
 
         transactions.setORDERID(orderid);
        /* transactions.setDate(date);
@@ -323,7 +323,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                         PaytmOrder order=paytmOrder(mCheckSum);
 
-                        serviceInitialization(service,order);
+                        serviceInitialization(service,order,transactions);
 
                     }
                 }
@@ -340,9 +340,11 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     }
 
-    private void serviceInitialization(PaytmPGService service,PaytmOrder order) {
+    private void serviceInitialization(PaytmPGService service, PaytmOrder order, final Transactions transactions) {
 
         service.initialize(order,null);
+
+        final Transactions transactions1=transactions;
 
         service.startPaymentTransaction(getContext(), true, true,
                 new PaytmPaymentTransactionCallback() {
@@ -351,8 +353,13 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                         Toast.makeText(getContext(),"Transaction Response:"+inResponse.toString(),Toast.LENGTH_SHORT).show();
 
+                        Log.d(TAG, "onTransactionResponse: "+transactions1.getORDERID()+"status="+transactions1.getStatus());
 
+                        FirebaseFirestore.getInstance().collection("transactions")
+                                .document(transactions1.getORDERID())
+                                .update("status","paid");
 
+                        mAdapter.notifyDataSetChanged();
                     }
 
                     @Override
