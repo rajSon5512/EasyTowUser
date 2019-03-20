@@ -144,20 +144,17 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMarkerDataArrayList.add(new MarkerData(21.198877, 72.832521, "SMC Parking slot"));
         mMarkerDataArrayList.add(new MarkerData(21.198556, 72.833122, "SMC Miltilevel parking zampabazar"));
         mMarkerDataArrayList.add(new MarkerData(21.198223, 72.833156, "Multi National Parking"));
-        mMarkerDataArrayList.add(new MarkerData(21.182371, 72.822649, "Pay And Park By SMC., Under, Ring Rd Flyover, Sahara Darwaja, New Textile Market, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182412, 72.822676, "SMC Pay & Park, Zampa Bazaar, Begampura, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182385, 72.822716, "Kavi Shree Jayant Pathak Garden SMC, Sagrampura Talavdi Road, Garden Colony, Rudrapura, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182379, 72.822685, "SMC Pay & Parking, Adajan Flyover Bridge, Opp. Mahan Terrace, Guru Ram Pavan Bhumi, Adajan Gam, Adajan, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182385, 72.822691, "S.M.C Multilevel Parking-Chauta Bazzar, Lal Gate, Shahpore, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182385, 72.822691, "SMC Parking Lot, 4/771, Station Rd, Zampa Bazaar, Begampura, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182382, 72.822688, "SMC Multilevel Parking, B/S Gandhi Smruti Bhavan,, Timiliyawad Rd, Nanpura, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182387, 72.822696, "S.M.C Pay & Park, Falsawadi Main Rd, Falsawadi, Begampura, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182361, 72.822703, "S.M.C Multi Level Parking Kadarshani Nal Road, Kadarshani Nal Rd, Amina Wadi, Kailash Nagar, Nanpura, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182361, 72.822703, "S.M.C Multi Level Parking, Chowk Bazar, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182376, 72.822717, "SMC Pay & Parking, B-9, Canal Rd, Panaas, Athwa, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182378, 72.822703, "SMC Pay & Parking, B-9, Canal Rd, Panaas, Athwa, Surat"));
-        mMarkerDataArrayList.add(new MarkerData(21.182378, 72.822703, "SMC Parking Lot, 4/771, Station Rd, Zampa Bazaar, Begampura, Surat"));
-
+        mMarkerDataArrayList.add(new MarkerData(21.188151, 72.848611, "Multi National Parking"));
+        mMarkerDataArrayList.add(new MarkerData(21.200461, 72.824655, "S.M.C Multilevel Parking-Chauta Bazzar"));
+        mMarkerDataArrayList.add(new MarkerData(21.185994, 72.814055, "SMC Multilevel Parking, Gandhi Smruti Bhavan,"));
+        mMarkerDataArrayList.add(new MarkerData(21.200426, 72.832317, "SMC Parking Lot Zampa Bazaar"));
+        mMarkerDataArrayList.add(new MarkerData(21.199191, 72.839918, "S.M.C Pay & Park,Begampura"));
+        mMarkerDataArrayList.add(new MarkerData(21.185941, 72.819460, "S.M.C Multi Level Parking Kadarshani Nal Road"));
+        mMarkerDataArrayList.add(new MarkerData(21.194644, 72.816821, "S.M.C Multi Level Parking, Chowk Bazar"));
+        mMarkerDataArrayList.add(new MarkerData(21.164719, 72.797321, "SMC Pay & Parking, B-9, Canal Rd,"));
+        mMarkerDataArrayList.add(new MarkerData(21.197284, 72.802520, "S.M.C Pay And Parking,  Hazira - Adajan Rd"));
+        mMarkerDataArrayList.add(new MarkerData(21.212859, 72.833024, "SMC Parking, near, SMC parking,Lal Darwaja"));
+        mMarkerDataArrayList.add(new MarkerData(21.169548, 72.784131, "SMC Pay & Park, Piplod"));
 
         setAllMarkers();
 

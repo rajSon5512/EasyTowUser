@@ -92,7 +92,7 @@ public class OtpFragment extends Fragment implements View.OnClickListener {
                     verifyPhoneNumberWithCode(verificationId,otpCode);
                     break;
 
-            case R.id.resend_button:
+            case R.id. _button:
                     break;
 
         }
