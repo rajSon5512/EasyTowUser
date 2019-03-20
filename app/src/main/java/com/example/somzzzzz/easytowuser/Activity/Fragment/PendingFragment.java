@@ -1,7 +1,9 @@
  package com.example.somzzzzz.easytowuser.Activity.Fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.somzzzzz.easytowuser.Activity.Model.CheckSum;
 import com.example.somzzzzz.easytowuser.Activity.Model.NormalUser;
+import com.example.somzzzzz.easytowuser.Activity.Model.SmcParking;
 import com.example.somzzzzz.easytowuser.Activity.Model.Tickets;
 import com.example.somzzzzz.easytowuser.Activity.Model.Transactions;
 import com.example.somzzzzz.easytowuser.R;
@@ -40,6 +43,7 @@ import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -185,7 +189,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
      public class PendingViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         private TextView index,vehiclenumber,pickupdate,time,fine;
-        private Button paybutton;
+        private Button paybutton,locateButton;
 
         public PendingViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -193,9 +197,11 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
             vehiclenumber=itemView.findViewById(R.id.vehicle_number);
             pickupdate=itemView.findViewById(R.id.date);
             time=itemView.findViewById(R.id.time);
+            locateButton=itemView.findViewById(R.id.locate);
             fine=itemView.findViewById(R.id.fine);
             paybutton=itemView.findViewById(R.id.pay_button);
             paybutton.setOnClickListener(this);
+            locateButton.setOnClickListener(this);
         }
 
         public void bind(final Tickets tickets){
@@ -217,20 +223,21 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
         @Override
         public void onClick(View v) {
 
+            int position=getAdapterPosition();
+
+            Log.d(TAG, "onClick: "+position);
+
+            Tickets ticket=mPendingEntries.get(position);
+
             switch(v.getId()){
 
                 case R.id.pay_button:
 
                     Toast.makeText(getContext(),"Pay",Toast.LENGTH_SHORT).show();
 
-                    int position=getAdapterPosition();
-
-                    Log.d(TAG, "onClick: "+position);
-
-                    Tickets tickets=mPendingEntries.get(position);
 
                     FirebaseFirestore.getInstance().collection("transactions")
-                            .whereEqualTo("vehiclenumber", tickets.getVehicleId())
+                            .whereEqualTo("vehiclenumber", ticket.getVehicleId())
                             .get()
                             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                 @Override
@@ -254,26 +261,80 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
                             });
                     break;
 
+
+                case R.id.locate:
+
+                    Toast.makeText(getContext(), "Rajiv", Toast.LENGTH_SHORT).show();
+
+                    Log.d(TAG, "onClick: "+ticket.getDestination());
+
+                    String destination=ticket.getDestination();
+
+                    openMapDestination(destination);
+
+                    break;
+
             }
 
         }
 
     }
 
-    /* private void checkFunction(String vehicleId) {
+     private void openMapDestination(String destination) {
 
-         Toast.makeText(getContext(),""+vehicleId,Toast.LENGTH_SHORT).show();
+         if(!destination.isEmpty()){
 
-         String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+             FirebaseFirestore.getInstance().collection(SmcParking.COLLECTION_NAME)
+                     .whereEqualTo(SmcParking.NAME,destination)
+                     .get()
+                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                         @Override
+                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-         Log.d(TAG, "checkFunction: "+uid);
+                             if(task.isSuccessful()){
+
+                                  QuerySnapshot querySnapshot=task.getResult();
+
+                                  List<DocumentSnapshot> documentSnapshot=querySnapshot.getDocuments();
+
+                                  for(DocumentSnapshot i:documentSnapshot){
+
+                                    SmcParking smcParking=new SmcParking(i);
+
+                                      Log.d(TAG, "log: "+smcParking.getLongitude());
+                                      Log.d(TAG, "let: "+smcParking.getLatitude());
+
+                                      Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+                                              Uri.parse("http://maps.google.com/maps?saddr=&daddr="+smcParking.getLatitude()+","+smcParking.getLongitude()));
+                                      startActivity(intent);
+
+                                  }
+
+                             }
 
 
+                         }
+                     });
 
-         createCheckSumGeneration();
+
+         }
 
      }
-*/
+
+     /* private void checkFunction(String vehicleId) {
+
+          Toast.makeText(getContext(),""+vehicleId,Toast.LENGTH_SHORT).show();
+
+          String uid=FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+          Log.d(TAG, "checkFunction: "+uid);
+
+
+
+          createCheckSumGeneration();
+
+      }
+ */
      private void createCheckSumGeneration(String orderid,String date,String fine,String status) {
 
         Log.d(CHECKSUM, "createCheckSumGeneration: "+orderid+"date :"+date+"fine :"+fine+"Status: "+status);
