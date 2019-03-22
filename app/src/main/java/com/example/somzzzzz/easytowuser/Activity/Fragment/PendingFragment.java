@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -41,9 +42,11 @@ import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -235,30 +238,9 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                     Toast.makeText(getContext(),"Pay",Toast.LENGTH_SHORT).show();
 
+                    fireTickets(ticket);
 
-                    FirebaseFirestore.getInstance().collection("transactions")
-                            .whereEqualTo("vehiclenumber", ticket.getVehicleId())
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                                    if(task.isSuccessful()){
-
-                                        List<DocumentSnapshot> documents = task.getResult().getDocuments();
-
-                                        for(int i=0;i<documents.size();i++){
-                                            String documentId = documents.get(i).getId();
-                                            String fine=documents.get(i).getString("taxamount");
-                                            String date=documents.get(i).getString("date");
-                                            String status=documents.get(i).getString("status");
-                                            createCheckSumGeneration(documentId,fine,date,status);
-                                        }
-
-                                    }
-
-                                }
-                            });
                     break;
 
 
@@ -279,6 +261,57 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
         }
 
     }
+
+
+
+    private void fireTickets(final Tickets ticket) {
+
+         Map<String,String> transaction=new HashMap<String,String>();
+
+         Date date1=new Date();
+         transaction.put(Transactions.DATE,date1.toString());
+         transaction.put(Transactions.STATUS,ticket.getCurrentStatus());
+         transaction.put(Transactions.TAXAMOUNT,""+ticket.getFine());
+         transaction.put(Transactions.VNUMBER,ticket.getVehicleId());
+         transaction.put(Transactions.TICKETID,ticket.getDocumentId());
+/*
+
+
+         FirebaseFirestore.getInstance().collection(Transactions.COLLECTION_NANE)
+                 .add(transaction).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+             @Override
+             public void onComplete(@NonNull Task<DocumentReference> task) {
+
+
+                 if(task.isSuccessful()){
+
+              //      createCheckSumGeneration(ticket.getDocumentId(),ticket.getFine());
+                     Log.d("fireTickets", "Transaction transfer ");
+
+                 }
+
+             }
+         });
+*/
+
+        final DocumentReference documentReference=FirebaseFirestore.getInstance().collection(Transactions.COLLECTION_NANE)
+                .document();
+
+        documentReference.set(transaction).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+                if(task.isSuccessful()){
+
+                    createCheckSumGeneration(documentReference.getId(),ticket);
+
+                }
+            }
+        });
+
+
+     }
+
 
      private void openMapDestination(String destination) {
 
@@ -335,16 +368,15 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
       }
  */
-     private void createCheckSumGeneration(String orderid,String date,String fine,String status) {
+     private void createCheckSumGeneration(String orderid, final Tickets tickets) {
 
-        Log.d(CHECKSUM, "createCheckSumGeneration: "+orderid+"date :"+date+"fine :"+fine+"Status: "+status);
+        Log.d(CHECKSUM, "createCheckSumGeneration: "+orderid+"fine :"+tickets.getFine());
 
         final Transactions transactions=new Transactions();
 
         transactions.setORDERID(orderid);
        /* transactions.setDate(date);
-       */ transactions.setFINE(fine);
-       transactions.setStatus(status);
+       */ transactions.setFINE(tickets.getFine());
 
         Retrofit retrofit=new Retrofit.Builder()
                 .baseUrl(Api.BASE_URL)
@@ -384,7 +416,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                         PaytmOrder order=paytmOrder(mCheckSum);
 
-                        serviceInitialization(service,order,transactions);
+                        serviceInitialization(service,order,transactions,tickets);
 
                     }
                 }
@@ -401,7 +433,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     }
 
-    private void serviceInitialization(PaytmPGService service, PaytmOrder order, final Transactions transactions) {
+    private void serviceInitialization(PaytmPGService service, PaytmOrder order, final Transactions transactions, final Tickets tickets) {
 
         service.initialize(order,null);
 
@@ -416,11 +448,10 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                         Log.d(TAG, "onTransactionResponse: "+transactions1.getORDERID()+"status="+transactions1.getStatus());
 
-                        FirebaseFirestore.getInstance().collection("transactions")
-                                .document(transactions1.getORDERID())
-                                .update("status","paid");
+                        Log.d(TAG, "onTransactionResponse: "+tickets.getDocumentId());
 
-                        mAdapter.notifyDataSetChanged();
+                        statusChangeMethod(transactions1,tickets);
+
                     }
 
                     @Override
@@ -464,7 +495,20 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     }
 
-    private PaytmOrder paytmOrder(CheckSum checkSum) {
+     private void statusChangeMethod(Transactions transactions1,Tickets ticket) {
+
+         FirebaseFirestore.getInstance().collection(Transactions.COLLECTION_NANE)
+                 .document(transactions1.getORDERID())
+                 .update("status","paid");
+
+         FirebaseFirestore.getInstance().collection(Tickets.COLLECTION_NAME)
+                 .document(ticket.getDocumentId())
+                 .update(Tickets.CURRENT_STATUS,"paid");
+
+
+     }
+
+     private PaytmOrder paytmOrder(CheckSum checkSum) {
 
         HashMap<String,String> paramMap=new HashMap<String,String>();
         paramMap.put( "MID" , checkSum.getMID());

@@ -2,7 +2,16 @@ package com.example.somzzzzz.easytowuser.Activity.Model;
 
 public class Transactions {
 
-        private String ORDERID;
+
+    public final static  String COLLECTION_NANE="transactions";
+    public final static  String DATE="date";
+    public final static  String STATUS="status";
+    public final static  String TAXAMOUNT="taxamount";
+    public final static  String VNUMBER="vehiclenumber";
+    public static final String TICKETID = "ticketdocumentid" ;
+
+
+    private String ORDERID;
     //  private String date;
         private String status;
         private String FINE;
