@@ -100,13 +100,21 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
         Log.d(TAG, "onCreateView: "+Tickets.COLLECTION_NAME);
 
-        fetchPendingEntries();
-
 
         return view;
     }
 
-    private void init(View view) {
+     @Override
+     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+         super.onViewCreated(view, savedInstanceState);
+
+         mPendingEntries.clear();
+         fetchPendingEntries();
+
+
+     }
+
+     private void init(View view) {
 
         mAdapter=new PendingAdapter();
      }
@@ -147,11 +155,11 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     }
 
-     private void addVehicleEntries(String s) {
+     private void addVehicleEntries(String vehiclenumber) {
 
-         Log.d(TAG, "addVehicleEntries: "+s);
+         Log.d(TAG, "addVehicleEntries: "+vehiclenumber);
 
-         mCollectionReference.whereEqualTo(Tickets.VEHICLE_ID,s)
+         mCollectionReference.whereEqualTo(Tickets.VEHICLE_ID,vehiclenumber)
                  .whereEqualTo(Tickets.CURRENT_STATUS,Tickets.DEFAULT_TICKET_STATUS)
                  .get()
                  .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -238,7 +246,9 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                     Toast.makeText(getContext(),"Pay",Toast.LENGTH_SHORT).show();
 
-                    fireTickets(ticket);
+                    Log.d(TAG, "onClick: "+getAdapterPosition());
+
+                    fireTickets(ticket,getAdapterPosition());
 
 
                     break;
@@ -264,7 +274,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
 
 
-    private void fireTickets(final Tickets ticket) {
+    private void fireTickets(final Tickets ticket, final int position) {
 
          Map<String,String> transaction=new HashMap<String,String>();
 
@@ -303,7 +313,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                 if(task.isSuccessful()){
 
-                    createCheckSumGeneration(documentReference.getId(),ticket);
+                    createCheckSumGeneration(documentReference.getId(),ticket,position);
 
                 }
             }
@@ -368,7 +378,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
       }
  */
-     private void createCheckSumGeneration(String orderid, final Tickets tickets) {
+     private void createCheckSumGeneration(String orderid, final Tickets tickets, final int position) {
 
         Log.d(CHECKSUM, "createCheckSumGeneration: "+orderid+"fine :"+tickets.getFine());
 
@@ -416,7 +426,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                         PaytmOrder order=paytmOrder(mCheckSum);
 
-                        serviceInitialization(service,order,transactions,tickets);
+                        serviceInitialization(service,order,transactions,tickets,position);
 
                     }
                 }
@@ -433,7 +443,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     }
 
-    private void serviceInitialization(PaytmPGService service, PaytmOrder order, final Transactions transactions, final Tickets tickets) {
+    private void serviceInitialization(PaytmPGService service, PaytmOrder order, final Transactions transactions, final Tickets tickets, final int position) {
 
         service.initialize(order,null);
 
@@ -450,7 +460,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                         Log.d(TAG, "onTransactionResponse: "+tickets.getDocumentId());
 
-                        statusChangeMethod(transactions1,tickets);
+                        statusChangeMethod(transactions1,tickets,position);
 
                     }
 
@@ -495,7 +505,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     }
 
-     private void statusChangeMethod(Transactions transactions1,Tickets ticket) {
+     private void statusChangeMethod(Transactions transactions1,Tickets ticket,int position) {
 
          FirebaseFirestore.getInstance().collection(Transactions.COLLECTION_NANE)
                  .document(transactions1.getORDERID())
@@ -505,6 +515,9 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
                  .document(ticket.getDocumentId())
                  .update(Tickets.CURRENT_STATUS,"paid");
 
+
+         Log.d(TAG, "statusChangeMethod: "+position);
+         mAdapter.notifyItemRemoved(position);
 
      }
 

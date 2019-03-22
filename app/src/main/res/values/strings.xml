@@ -22,4 +22,5 @@
     <string name="default_info_title">Default</string>
     <string name="default_info_snippet">defualt_snippet</string>
     <string name="pick_place">pick place</string>
+    <string name="status">DPAID</string>
 </resources>
