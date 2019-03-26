@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:ellipsize="start"
+        android:textColor="@color/black"
         android:singleLine="true"
         tools:text="1234234234234" />
 
@@ -25,35 +26,58 @@
         <TextView
             android:id="@+id/vehicle_number"
             android:padding="10dp"
+            android:textStyle="bold"
+            android:textColorHighlight="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:textSize="@dimen/big_font_size"
             tools:text="@string/vehicle_number" />
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/date"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:layout_gravity="left"
+            android:textColor="@color/black"
+             android:layout_gravity="left"
             android:text="@string/date" />
 
         <TextView
             android:id="@+id/time"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            android:textColor="@color/black"
             android:layout_gravity="left"
             android:text="@string/time" />
 
-        <TextView
+        </LinearLayout>
+
+        <!--<TextView
             android:id="@+id/fine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:padding="5dp"
+            android:textColor="@color/black"
             android:text="@string/fine" />
+-->
+        <Button
+            android:padding="10dp"
+            android:id="@+id/locate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonround"
+            android:layout_gravity="left"
+            android:textColor="@color/black"
+            android:text="@string/locate" />
+
 
     </LinearLayout>
 
@@ -62,28 +86,25 @@
         android:padding="10dp"
         android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
 
             <Button
                 android:padding="10dp"
                 android:id="@+id/pay_button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="right"
+                android:background="@drawable/paybuttonhighlights"
+                android:textColor="@color/black"
+                android:textStyle="bold"
                 android:text="@string/pay" />
-
-        <Button
-            android:padding="10dp"
-            android:id="@+id/locate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="@string/locate" />
-
-
 
     </LinearLayout>
 
+
 </LinearLayout>
+
+
+
 

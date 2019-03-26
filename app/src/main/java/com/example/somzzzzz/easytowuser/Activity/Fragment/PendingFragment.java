@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +43,11 @@ import com.paytm.pgsdk.PaytmOrder;
 import com.paytm.pgsdk.PaytmPGService;
 import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -88,6 +94,8 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
        mRecyclerView=view.findViewById(R.id.recycler_view);
 
+        DividerItemDecoration itemDecorator = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        itemDecorator.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider));
 
        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -209,19 +217,41 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
             pickupdate=itemView.findViewById(R.id.date);
             time=itemView.findViewById(R.id.time);
             locateButton=itemView.findViewById(R.id.locate);
-            fine=itemView.findViewById(R.id.fine);
+            //fine=itemView.findViewById(R.id.fine);
             paybutton=itemView.findViewById(R.id.pay_button);
             paybutton.setOnClickListener(this);
             locateButton.setOnClickListener(this);
         }
 
-        public void bind(final Tickets tickets){
+        public void bind(final Tickets tickets) {
 
             index.setText(String.valueOf(getAdapterPosition()+1));
             vehiclenumber.setText(tickets.getVehicleId());
-            fine.setText("Fine: "+tickets.getFine());
+            //fine.setText("Fine: "+tickets.getFine());
             String date1=tickets.getDate();
-            pickupdate.setText(date1);
+
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+            try {
+                cal.setTime(sdf.parse(date1));// all done
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            Log.d(TAG, "bind: "+cal.toString());
+
+            Date date=cal.getTime();
+
+            DateFormat dateFormat=new SimpleDateFormat("HH:mm a");
+            DateFormat dateFormat1=new SimpleDateFormat("dd-MM-YYYY");
+
+            String timeFormat=dateFormat.format(date);
+            String dateStringFormat=dateFormat1.format(date);
+
+            pickupdate.setText(dateStringFormat);
+            time.setText(timeFormat);
+
+            paybutton.setText(paybutton.getText()+"\n\n"+"₹"+tickets.getFine());
 
             /*paybutton.setOnClickListener(new View.OnClickListener() {
                 @Override

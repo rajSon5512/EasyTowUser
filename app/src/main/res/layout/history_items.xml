@@ -25,6 +25,7 @@
             android:id="@+id/vehicle_number_history"
             android:padding="10dp"
             android:layout_width="match_parent"
+            android:textColor="@color/black"
             android:layout_height="wrap_content"
             android:textSize="@dimen/big_font_size"
             tools:text="@string/vehicle_number" />
@@ -35,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
+            android:textColor="@color/black"
             android:layout_gravity="left"
             android:text="@string/date" />
 
@@ -44,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
+            android:textColor="@color/black"
             android:padding="5dp"
             android:text="@string/fine" />
 
@@ -51,6 +54,7 @@
             android:id="@+id/status_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:padding="5dp"
             android:layout_gravity="left"
             android:text="@string/status" />

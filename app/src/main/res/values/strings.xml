@@ -8,8 +8,8 @@
     <string name="otpEmpty">PLEASE ENTER OTP</string>
     <string name="otpWrong">INVALID OTP</string>
     <string name="pay_bill">PAY</string>
-    <string name="pay">PAY</string>
-    <string name="locate">LOCATE</string>
+    <string name="pay">Pay</string>
+    <string name="locate">Locate</string>
     <string name="time">PICK_TIME</string>
     <string name="date">Pick_Date</string>
     <string name="vehicle_number">Vehicle_number</string>
@@ -23,4 +23,6 @@
     <string name="default_info_snippet">defualt_snippet</string>
     <string name="pick_place">pick place</string>
     <string name="status">DPAID</string>
+    <string name="Rs">\u20B9</string>
+
 </resources>
