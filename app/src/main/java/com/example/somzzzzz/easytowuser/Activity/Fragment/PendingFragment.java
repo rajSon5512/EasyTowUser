@@ -454,13 +454,17 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
                     @Override
                     public void onTransactionResponse(Bundle inResponse) {
 
-                        Toast.makeText(getContext(),"Transaction Response:"+inResponse.toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(),"Transaction Successfully Completed.",Toast.LENGTH_SHORT).show();
 
-                        Log.d(TAG, "onTransactionResponse: "+transactions1.getORDERID()+"status="+transactions1.getStatus());
+                        Log.d(TAG, " "+"status="+transactions1.getStatus());
 
                         Log.d(TAG, "onTransactionResponse: "+tickets.getDocumentId());
 
-                        statusChangeMethod(transactions1,tickets,position);
+                        Log.d(TAG, "onTransactionResponse: "+position);
+
+                        removeAt(position);
+
+                        statusChangeMethod(transactions1,tickets);
 
                     }
 
@@ -505,7 +509,15 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     }
 
-     private void statusChangeMethod(Transactions transactions1,Tickets ticket,int position) {
+     private void removeAt(int position) {
+
+        mPendingEntries.remove(position);
+        mAdapter.notifyItemRemoved(position);
+        mAdapter.notifyItemChanged(position,mPendingEntries.size());
+
+     }
+
+     private void statusChangeMethod(Transactions transactions1,Tickets ticket) {
 
          FirebaseFirestore.getInstance().collection(Transactions.COLLECTION_NANE)
                  .document(transactions1.getORDERID())
@@ -516,8 +528,6 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
                  .update(Tickets.CURRENT_STATUS,"paid");
 
 
-         Log.d(TAG, "statusChangeMethod: "+position);
-         mAdapter.notifyItemRemoved(position);
 
      }
 
