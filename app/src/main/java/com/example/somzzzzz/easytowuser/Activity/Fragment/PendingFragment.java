@@ -304,22 +304,17 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
          });
 */
 
-        final DocumentReference documentReference=FirebaseFirestore.getInstance().collection(Transactions.COLLECTION_NANE)
-                .document();
-
-        documentReference.set(transaction).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-
-                if(task.isSuccessful()){
-
-                    createCheckSumGeneration(documentReference.getId(),ticket,position);
-
-                }
-            }
-        });
-
-
+        FirebaseFirestore.getInstance()
+                .collection(Transactions.COLLECTION_NANE)
+                .add(transaction)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+                            createCheckSumGeneration(task.getResult().getId(),ticket,position);
+                        }
+                    }
+                });
      }
 
 
@@ -401,6 +396,12 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                      mCheckSum=response.body();
                     Log.d(CHECKSUM, "onResponse: "+mCheckSum.getCHECKSUMHASH());
+
+                     PaytmPGService service=PaytmPGService.getStagingService();
+                     PaytmOrder order=paytmOrder(mCheckSum);
+                     serviceInitialization(service,order,transactions,tickets,position);
+
+
             }
 
             @Override
@@ -410,7 +411,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
             }
         });
 
-        api.getResponse(mCheckSum).enqueue(new Callback<com.example.somzzzzz.easytowuser.Activity.Model.Response>() {
+       /* api.getResponse(mCheckSum).enqueue(new Callback<com.example.somzzzzz.easytowuser.Activity.Model.Response>() {
             @Override
             public void onResponse(Call<com.example.somzzzzz.easytowuser.Activity.Model.Response> call, Response<com.example.somzzzzz.easytowuser.Activity.Model.Response> response) {
 
@@ -422,24 +423,24 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                         Log.d(CHECKSUM, "SUCCESS");
 
-                        PaytmPGService service=PaytmPGService.getStagingService();
+                        *//*PaytmPGService service=PaytmPGService.getStagingService();
 
                         PaytmOrder order=paytmOrder(mCheckSum);
 
-                        serviceInitialization(service,order,transactions,tickets,position);
+                        serviceInitialization(service,order,transactions,tickets,position);*//*
 
                     }
                 }
 
             }
-
-            @Override
+*/
+           /* @Override
             public void onFailure(Call<com.example.somzzzzz.easytowuser.Activity.Model.Response> call, Throwable t) {
 
                 Log.d(CHECKSUM, "onFailure: "+t.getMessage());
 
             }
-        });
+        });*/
 
     }
 
