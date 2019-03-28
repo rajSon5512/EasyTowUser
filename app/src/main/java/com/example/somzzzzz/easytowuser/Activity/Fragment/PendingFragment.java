@@ -1,6 +1,7 @@
  package com.example.somzzzzz.easytowuser.Activity.Fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -64,7 +66,7 @@ import static android.support.constraint.Constraints.TAG;
 import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
 
- public class PendingFragment extends Fragment {
+ public class PendingFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -74,6 +76,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
     private List<Tickets> mPendingEntries=new ArrayList<>();
     private CheckSum mCheckSum;
      private static final String USERID="USERID";
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
      @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +87,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
     }
 
+    @SuppressLint("ResourceAsColor")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -108,6 +112,20 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
         Log.d(TAG, "onCreateView: "+Tickets.COLLECTION_NAME);
 
+        mSwipeRefreshLayout=view.findViewById(R.id.swiperefresher);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeColors(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+
+                    mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         return view;
     }
@@ -116,10 +134,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
      public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
          super.onViewCreated(view, savedInstanceState);
 
-         mPendingEntries.clear();
          fetchPendingEntries();
-
-
      }
 
      private void init(View view) {
@@ -165,6 +180,13 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
      private void addVehicleEntries(String vehiclenumber) {
 
+         if(!mPendingEntries.isEmpty()){
+
+             mPendingEntries.clear();
+         }
+
+
+
          Log.d(TAG, "addVehicleEntries: "+vehiclenumber);
 
          mCollectionReference.whereEqualTo(Tickets.VEHICLE_ID,vehiclenumber)
@@ -201,6 +223,14 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
          });
 
 
+        mSwipeRefreshLayout.setRefreshing(false);
+     }
+
+     @Override
+     public void onRefresh() {
+
+         mSwipeRefreshLayout.setRefreshing(true);
+         fetchPendingEntries();
 
      }
 
