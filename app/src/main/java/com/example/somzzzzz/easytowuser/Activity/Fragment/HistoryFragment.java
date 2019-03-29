@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,6 +37,7 @@ public class HistoryFragment extends Fragment {
     private List<Tickets> mTicket=new ArrayList<>();
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +60,22 @@ public class HistoryFragment extends Fragment {
 
         Log.d(TAG, "HistotyFragment ");
 
-        fetchHistoryEntries();
+
+        mSwipeRefreshLayout=view.findViewById(R.id.swipeRefresher);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.d("ONREFRESH", "onRefresh: It's run ");
+                fetchHistoryEntries();
+            }
+        });
+
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
 
         return view;
     }
@@ -74,6 +91,7 @@ public class HistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        fetchHistoryEntries();
 
     }
 
@@ -105,6 +123,9 @@ public class HistoryFragment extends Fragment {
 
     private void FetchPaidEntries(String vehicleNumber) {
 
+        clear();
+        final List<Tickets> listTickets=new ArrayList<Tickets>();
+
         FirebaseFirestore.getInstance().collection(Tickets.COLLECTION_NAME)
                 .whereEqualTo(Tickets.VEHICLE_ID,vehicleNumber)
                 .whereEqualTo(Tickets.CURRENT_STATUS,"paid")
@@ -129,10 +150,12 @@ public class HistoryFragment extends Fragment {
                                 Log.d(TAG, "onComplete: "+ticket.getDocumentId());
                                 Log.d(TAG, "onComplete: "+ticket.getDate());
 
-                                mTicket.add(ticket);
-                                mAdapter.notifyItemInserted(mTicket.indexOf(ticket));
+                                listTickets.add(ticket);
 
                             }
+
+                            addAll(listTickets);
+                            mSwipeRefreshLayout.setRefreshing(false);
 
                         }
 
@@ -198,4 +221,18 @@ public class HistoryFragment extends Fragment {
             return mTicket.size();
         }
     }
+
+
+    public void clear() {
+        mTicket.clear();
+        mAdapter.notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Tickets>  ticket) {
+        mTicket.addAll(ticket);
+        mAdapter.notifyDataSetChanged();
+    }
+
+
 }
