@@ -1,4 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -69,7 +74,7 @@
             android:text="@string/fine" />
 -->
         <Button
-            android:padding="10dp"
+            android:padding="5dp"
             android:id="@+id/locate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,9 +107,13 @@
 
     </LinearLayout>
 
-
 </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="2dp"
+        android:background="@color/common_google_signin_btn_text_dark_disabled" />
 
-
+</LinearLayout>
 

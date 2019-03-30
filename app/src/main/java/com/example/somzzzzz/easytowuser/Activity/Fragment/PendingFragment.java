@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -73,7 +74,8 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
     private FirebaseUser mFirebaseUser;
     private List<Tickets> mPendingEntries=new ArrayList<>();
     private CheckSum mCheckSum;
-     private static final String USERID="USERID";
+    private static final String USERID="USERID";
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
      @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -105,6 +107,16 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
         mFirebaseFirestore=FirebaseFirestore.getInstance();
         mCollectionReference=mFirebaseFirestore.collection(Tickets.COLLECTION_NAME);
+
+        mSwipeRefreshLayout=view.findViewById(R.id.swipeRefresher);
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         Log.d(TAG, "onCreateView: "+Tickets.COLLECTION_NAME);
 
