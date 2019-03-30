@@ -114,12 +114,20 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
             @Override
             public void onRefresh() {
 
-                mSwipeRefreshLayout.setRefreshing(false);
+                fetchPendingEntries();
+
             }
         });
 
+        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
         Log.d(TAG, "onCreateView: "+Tickets.COLLECTION_NAME);
 
+        fetchPendingEntries();
 
         return view;
     }
@@ -127,11 +135,6 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
      @Override
      public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
          super.onViewCreated(view, savedInstanceState);
-
-         mPendingEntries.clear();
-         fetchPendingEntries();
-
-
      }
 
      private void init(View view) {
@@ -140,6 +143,8 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
      }
 
     private void fetchPendingEntries() {
+
+         clear();
 
         String userId=FirebaseAuth.getInstance().getUid();
 
@@ -179,6 +184,8 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
          Log.d(TAG, "addVehicleEntries: "+vehiclenumber);
 
+         final List<Tickets> pendingEntriesTicket=new ArrayList<>();
+
          mCollectionReference.whereEqualTo(Tickets.VEHICLE_ID,vehiclenumber)
                  .whereEqualTo(Tickets.CURRENT_STATUS,Tickets.DEFAULT_TICKET_STATUS)
                  .get()
@@ -195,12 +202,15 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
 
                          for (DocumentSnapshot document:documentSnapshots) {
 
-                             Tickets tickets=new Tickets(document);
+                             Tickets ticket=new Tickets(document);
 
-                             mPendingEntries.add(tickets);
-                             mAdapter.notifyItemInserted(mPendingEntries.indexOf(tickets));
+                             pendingEntriesTicket.add(ticket);
 
                          }
+
+                         addAll(pendingEntriesTicket);
+                         mSwipeRefreshLayout.setRefreshing(false);
+
 
                          Log.d(TAG, "onSuccess: "+mPendingEntries.size());
                      }
@@ -211,8 +221,6 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
                  Log.d(TAG, "onFailure: "+e.getMessage());
              }
          });
-
-
 
      }
 
@@ -624,4 +632,17 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
             return mPendingEntries.size();
         }
     }
-}
+
+     public void clear() {
+         mPendingEntries.clear();
+         mAdapter.notifyDataSetChanged();
+     }
+
+     // Add a list of items -- change to type used
+     public void addAll(List<Tickets>  ticket) {
+         mPendingEntries.addAll(ticket);
+         mAdapter.notifyDataSetChanged();
+     }
+
+
+ }
