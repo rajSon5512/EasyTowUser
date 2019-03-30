@@ -9,15 +9,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.somzzzzz.easytowuser.Activity.Model.NormalUser;
 import com.example.somzzzzz.easytowuser.Activity.Model.Tickets;
-import com.example.somzzzzz.easytowuser.Activity.Model.Transactions;
 import com.example.somzzzzz.easytowuser.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,8 +23,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static android.support.constraint.Constraints.TAG;
 
@@ -167,7 +169,7 @@ public class HistoryFragment extends Fragment {
 
     public class HistoryViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView srno,vehiclenumber,date,fine,status;
+        private TextView srno,vehiclenumber, dateTextView,fine,status,timeTextView;
 
 
         public HistoryViewHolder(@NonNull View itemView) {
@@ -175,9 +177,10 @@ public class HistoryFragment extends Fragment {
 
             srno=itemView.findViewById(R.id.sr_no);
             vehiclenumber=itemView.findViewById(R.id.vehicle_number_history);
-            date=itemView.findViewById(R.id.date_history);
+            dateTextView =itemView.findViewById(R.id.date_history);
             status=itemView.findViewById(R.id.status_history);
             fine=itemView.findViewById(R.id.fine_history);
+            timeTextView=itemView.findViewById(R.id.time_history);
         }
 
         public void bind(Tickets ticket){
@@ -185,9 +188,35 @@ public class HistoryFragment extends Fragment {
             Log.d(TAG, "bind: "+ticket.getDocumentId());
             srno.setText(String.valueOf(getAdapterPosition()+1));
             vehiclenumber.setText(ticket.getVehicleId());
-            date.setText(ticket.getDate());
-            status.setText(ticket.getCurrentStatus());
+
+            String date1=ticket.getDate();
+
+            Calendar cal = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+            try {
+                cal.setTime(sdf.parse(date1));// all done
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            Log.d(TAG, "bind: "+cal.toString());
+
+            Date date=cal.getTime();
+
+            SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MM-YYYY");
+            SimpleDateFormat simpleTimeFormat=new SimpleDateFormat("HH:mm a");
+
+
+            String datevalue=simpleDateFormat.format(date);
+            String time=simpleTimeFormat.format(date);
+
+            dateTextView.setText(datevalue);
+            timeTextView.setText(time);
+
             fine.setText(ticket.getFine());
+            status.setText(ticket.getCurrentStatus());
+
+
         }
 
     }
