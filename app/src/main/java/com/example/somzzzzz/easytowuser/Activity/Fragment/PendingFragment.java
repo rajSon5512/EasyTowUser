@@ -271,7 +271,7 @@ import static com.paytm.pgsdk.PaytmConstants.CHECKSUM;
             pickupdate.setText(dateStringFormat);
             time.setText(timeFormat);
 
-            paybutton.setText(paybutton.getText()+"\n\n"+"₹"+tickets.getFine());
+            paybutton.setText("PAY"+"\n\n"+"₹"+tickets.getFine());
 
             /*paybutton.setOnClickListener(new View.OnClickListener() {
                 @Override

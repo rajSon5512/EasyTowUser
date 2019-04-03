@@ -63,6 +63,8 @@ public class LoginFragment extends Fragment{
 
             Intent intent=new Intent(getContext(),MainActivity.class);
             startActivity(intent);
+            getActivity().finish();
+
         }
 
         mCallBacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
