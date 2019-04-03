@@ -113,6 +113,9 @@ public class LoginFragment extends Fragment{
 
                 Log.d(TAG, "onSuccess:success ");
 
+                Intent intent=new Intent(getActivity(),MainActivity.class);
+                startActivity(intent);
+                getActivity().finish();
             }
         }).addOnFailureListener(getActivity(), new OnFailureListener() {
             @Override
