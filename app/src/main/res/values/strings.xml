@@ -24,5 +24,6 @@
     <string name="pick_place">pick place</string>
     <string name="status">DPAID</string>
     <string name="Rs">\u20B9</string>
+    <string name="vehicle_owner_name">Vehicle owner name</string>
 
 </resources>

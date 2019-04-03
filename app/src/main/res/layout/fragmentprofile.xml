@@ -1,46 +1,58 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@color/common_google_signin_btn_text_dark_default"
-    android:layout_height="match_parent">
+    android:background="@color/buttonColor"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/userImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/tow_truck"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="100dp"
+        />
+
+
+    <TextView
+        android:id="@+id/vehicle_owner_textview"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="30dp"
+        android:text="@string/vehicle_owner_name"
+        android:textColor="@color/black"/>
+
+    <EditText
+        android:id="@+id/owner_phoneNumber"
+        android:padding="10dp"
+        android:layout_below="@id/vehicle_owner_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_green_light"
-        android:orientation="vertical">
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        />
 
-        <ImageView
-            android:id="@+id/profile_pic"
-            android:layout_width="match_parent"
-            android:layout_height="210dp"
-            />
-        <EditText
-            android:id="@+id/profile_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:hint="@string/profile_name" />
-        <EditText
-            android:id="@+id/mobile_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:inputType="number"
-            android:maxLength="10"
-            android:hint="@string/mobile_number"/>
+    <EditText
+        android:id="@+id/registrationDate_profile"
+        android:padding="10dp"
+        android:layout_below="@id/owner_phoneNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        />
+    <EditText
+        android:id="@+id/vehicle_number_profile"
+        android:padding="10dp"
+        android:layout_below="@id/registrationDate_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
 
-        <Button
-
-            android:id="@+id/save_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:layout_marginTop="15dp"
-            android:text="@string/save" />
+        />
 
 
-    </LinearLayout>
-
-
-</FrameLayout>
+</RelativeLayout>

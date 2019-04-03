@@ -10,12 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toolbar;
 
 import com.example.somzzzzz.easytowuser.Activity.Model.NormalUser;
 import com.example.somzzzzz.easytowuser.R;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -26,19 +29,14 @@ import static android.support.constraint.Constraints.TAG;
 
 public class ProfileFragment extends Fragment {
 
-    private CollectionReference mCollectionReference;
-    private FirebaseUser mUser;
-    private EditText mProfileName;
-    private EditText mMobileNumber;
-
+    private EditText mMobileNumber,mVehicleNumber,mDateRegistration;
+    private TextView mVehicleOwnerName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
-        mUser=FirebaseAuth.getInstance().getCurrentUser();
-        mCollectionReference=FirebaseFirestore.getInstance().collection(NormalUser.COLLECTION_NAME);
     }
 
     @Nullable
@@ -56,38 +54,46 @@ public class ProfileFragment extends Fragment {
 
     private void fetchInfo() {
 
-        mCollectionReference.document(mUser.getUid()).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+        String userID=FirebaseAuth.getInstance().getUid();
 
-                        NormalUser normalUser=new NormalUser(documentSnapshot);
+        FirebaseFirestore.getInstance().collection(NormalUser.COLLECTION_NAME)
+                    .document(userID)
+                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                        mProfileName.setText(normalUser.getOwnerName());
-                        mMobileNumber.setText(normalUser.getOwnerMobileNumber());
+                if(task.isSuccessful()){
 
-                        mProfileName.setEnabled(false);
-                        mMobileNumber.setEnabled(false);
+                    DocumentSnapshot documentSnapshot=task.getResult();
+
+                    NormalUser normalUser=new NormalUser(documentSnapshot);
+
+                    setDatails(normalUser);
 
 
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
+                }
 
-                        Log.d(TAG, "onFailure: "+e.getMessage());
 
-                    }
-                });
-
+            }
+        });
 
     }
 
+    private void setDatails(NormalUser normalUser) {
+
+        mVehicleOwnerName.setText(normalUser.getOwnerName());
+        mDateRegistration.setText(normalUser.getRegistrationDate());
+        mVehicleNumber.setText(normalUser.getVehicleNumber());
+        mMobileNumber.setText(normalUser.getOwnerMobileNumber());
+    }
+
+
     private void init(View view) {
 
-        mProfileName=view.findViewById(R.id.profile_name);
-        mMobileNumber=view.findViewById(R.id.mobile_number);
+        mDateRegistration=view.findViewById(R.id.registrationDate_profile);
+        mVehicleNumber=view.findViewById(R.id.vehicle_number_profile);
+        mMobileNumber=view.findViewById(R.id.owner_phoneNumber);
+        mVehicleOwnerName=view.findViewById(R.id.vehicle_owner_textview);
 
     }
 

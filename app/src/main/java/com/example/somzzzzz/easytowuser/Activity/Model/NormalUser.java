@@ -18,6 +18,12 @@ public class NormalUser {
     private String mOwnerMobileNumber;
     private String mVehicleType;
 
+    public String getRegistrationDate() {
+        return mRegistrationDate;
+    }
+
+    private String mRegistrationDate;
+
 
     public NormalUser(DocumentSnapshot documentSnapshot){
 
@@ -25,7 +31,7 @@ public class NormalUser {
         mOwnerMobileNumber=documentSnapshot.getString(NormalUser.MOBILE);
         mVehicleNumber=documentSnapshot.getString(NormalUser.VEHICLE_NUMBER);
         mVehicleType=documentSnapshot.getString(NormalUser.VEHICLE_TYPE);
-
+        mRegistrationDate=documentSnapshot.get(NormalUser.REGISTRATION_DATE).toString();
     }
 
 
